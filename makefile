@@ -47,10 +47,10 @@ else ifeq ($(HOSTNAME),pppl_gcc)
   NETCDF_F = $(NETCDF_FORTRAN_HOME)
   NETCDF_C = $(NETCDF_C_HOME)
   FC = mpifort
-  EXTRA_COMPILE_FLAGS = -O2 -ffree-line-length-none -fexternal-blas -fopenmp -I$(NETCDF_F)/include -I$(NETCDF_C)/include
-  EXTRA_LINK_FLAGS = -fopenmp -lopenblas -L$(NETCDF_C)/lib -lnetcdf -L$(NETCDF_F)/lib -lnetcdff
-  LIBSTELL_DIR=$(STELLOPT_PATH)/LIBSTELL/Release
-  LIBSTELL_FOR_REGCOIL=$(LIBSTELL_DIR)/libstell.a
+  EXTRA_COMPILE_FLAGS = -O2 -ffree-line-length-none -fopenmp  -I/usr/local/include -I/opt/include -I/usr/include
+  EXTRA_LINK_FLAGS = -fopenmp -L/usr/local/lib -lnetcdf -L/opt/lib  -L/usr/lib  
+  # LIBSTELL_DIR=$(STELLOPT_PATH)/LIBSTELL/Release
+  # LIBSTELL_FOR_REGCOIL=$(LIBSTELL_DIR)/libstell.a
   REGCOIL_COMMAND_TO_SUBMIT_JOB = srun -N 1 -n 1 -c 8 -q debug --mem 8G
 
 else ifeq ($(HOSTNAME),pppl_intel)
@@ -65,8 +65,8 @@ else ifeq ($(HOSTNAME),pppl_intel)
     -I$(NETCDF_F)/include -I$(NETCDF_C)/include \
     -mkl	
   EXTRA_LINK_FLAGS = -qopenmp -mkl -L$(NETCDF_C)/lib -lnetcdf -L$(NETCDF_F)/lib -lnetcdff
-  LIBSTELL_DIR=$(STELLOPT_PATH)/LIBSTELL/Release
-  LIBSTELL_FOR_REGCOIL=$(LIBSTELL_DIR)/libstell.a
+  # LIBSTELL_DIR=$(STELLOPT_PATH)/LIBSTELL/Release
+  # LIBSTELL_FOR_REGCOIL=$(LIBSTELL_DIR)/libstell.a
   REGCOIL_COMMAND_TO_SUBMIT_JOB = srun -N 1 -n 1 -c 8 -q debug --mem 8G
 else ifeq ($(HOSTNAME),stellar)
   REGCOIL_HOST=stellar
@@ -108,22 +108,28 @@ else ifeq ($(CLUSTER),RAVEN)
   EXTRA_LINK_FLAGS =  -qopenmp  -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_intel_thread.a ${MKLROOT}/lib/intel64/libmkl_core.a -Wl,--end-group -liomp5 -lpthread -lm -ldl -Wl,-ydgemm_ $(shell nc-config --flibs)
   # For batch systems, set the following variable to the command used to run jobs. This variable is used by 'make test'.
   REGCOIL_COMMAND_TO_SUBMIT_JOB = srun
-
-else
-  REGCOIL_HOST=macports
+else ifeq ($(HOSTNAME),ippports)
+  REGCOIL_HOST=pppl_gcc
   FC = mpif90
   #EXTRA_COMPILE_FLAGS = -fopenmp -I/opt/local/include -ffree-line-length-none -cpp
   #EXTRA_COMPILE_FLAGS = -fopenmp -I/opt/local/include -ffree-line-length-none -O0 -g
   #EXTRA_LINK_FLAGS =  -fopenmp -L/opt/local/lib -lnetcdff  -lnetcdf -framework Accelerate
   EXTRA_COMPILE_FLAGS = -fopenmp -I/usr/local/include -ffree-line-length-none -O0 -g -fallow-argument-mismatch
-  EXTRA_LINK_FLAGS =  -fopenmp -L/usr/local/lib -lnetcdff  -lnetcdf -framework Accelerate
+  EXTRA_LINK_FLAGS =  -fopenmp -L/usr/local/lib -lnetcdff  -lnetcdf
+
+  REGCOIL_COMMAND_TO_SUBMIT_JOB = srun -N 1 -n 1 -c 8 -q debug --mem 8G
+else
+  # This configuration works for the IPP ST cluster. Configure by running `ml intel ompi netcdf mkl`
+  REGCOIL_HOST=stcluster
+  FC = mpif90
+  EXTRA_COMPILE_FLAGS = -O3 -qopenmp -mkl -I/usr/local/include 
+  EXTRA_LINK_FLAGS =  -qopenmp -mkl  -L/usr/local/lib -lnetcdff  -lnetcdf -lpthread -lm -ldl
 
   # For batch systems, set the following variable to the command used to run jobs. This variable is used by 'make test'.
   REGCOIL_COMMAND_TO_SUBMIT_JOB =
 endif
-
-
 # End of system-dependent variable assignments
+
 
 TARGET = regcoil
 
