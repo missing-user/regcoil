@@ -355,20 +355,19 @@ plt.figtext(0.5, 0.005, os.path.abspath(filename),horizontalalignment='center',v
 # Now make 3D surface plot
 ########################################################
 
-#from mpl_toolkits.mplot3d import Axes3D
-#
-#figureNum += 1
-#fig = plt.figure(figureNum)
-#fig.patch.set_facecolor('white')
-#ax = fig.gca(projection='3d')
-#ax.plot_surface(r_plasma[:,:,0], r_plasma[:,:,1], r_plasma[:,:,2], rstride=1, cstride=1, color='r',linewidth=0)
-#
-#maxIndex = int(nzetal_coil*0.55)
-#minIndex = int(nzetal_coil*0.15)
-#ax.plot_surface(r_coil[minIndex:maxIndex,:,0], r_coil[minIndex:maxIndex,:,1], r_coil[minIndex:maxIndex,:,2], rstride=1, cstride=1, color='b',linewidth=0)
-#
-#plotLMax = r_coil.max()
-#ax.auto_scale_xyz([-plotLMax, plotLMax], [-plotLMax, plotLMax], [-plotLMax, plotLMax])
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure(figsize=figsize)
+fig.patch.set_facecolor('white')
+ax = fig.add_subplot(projection='3d')
+ax.plot_surface(r_plasma[:,:,0], r_plasma[:,:,1], r_plasma[:,:,2], rstride=1, cstride=1, color='r',linewidth=0)
+
+maxIndex = int(nzetal_coil*0.55)
+minIndex = int(nzetal_coil*0.15)
+ax.plot_surface(r_coil[minIndex:maxIndex,:,0], r_coil[minIndex:maxIndex,:,1], r_coil[minIndex:maxIndex,:,2], rstride=1, cstride=1, color='b',linewidth=0)
+
+plotLMax = r_coil.max()
+ax.auto_scale_xyz([-plotLMax, plotLMax], [-plotLMax, plotLMax], [-plotLMax, plotLMax])
 
 
 
