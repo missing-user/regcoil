@@ -16,6 +16,10 @@ subroutine regcoil_diagnostics(ilambda)
   factor_zeta  = net_poloidal_current_Amperes / twopi
   factor_theta = net_toroidal_current_Amperes / twopi
 
+if (ilambda .eq. -1) then 
+     solution = single_valued_current_potential_mn(:, Nlambda) ! pick the ilambda solution we want to project
+     Bnormal_total_middle = (reshape(matmul(g,solution),(/ ntheta_plasma, nzeta_plasma /)) / norm_normal_plasma)
+else   
   single_valued_current_potential_mn(:,ilambda) = solution
   this_current_potential = reshape(matmul(basis_functions, solution), (/ ntheta_coil, nzeta_coil /)) ! Could use BLAS2 for this line for extra speed.
   single_valued_current_potential_thetazeta(:,:,ilambda) = this_current_potential
@@ -68,5 +72,7 @@ subroutine regcoil_diagnostics(ilambda)
   if (trim(target_option)=='lp_norm_K') then
     if (verbose) print "(a,es10.3)","    lp_norm_K:", lp_norm_K(ilambda)
   end if
+
+end if
 
 end subroutine regcoil_diagnostics

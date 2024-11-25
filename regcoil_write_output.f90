@@ -125,6 +125,7 @@ subroutine regcoil_write_output
        vn_single_valued_current_potential_thetazeta = "single_valued_current_potential_thetazeta", &
        vn_current_potential = "current_potential", &
        vn_Bnormal_total = "Bnormal_total", &
+       vn_Bnormal_total_middle = "Bnormal_total_middle", &
        vn_K2 = "K2", &
        vn_Laplace_Beltrami2 = "Laplace_Beltrami2"
 
@@ -504,6 +505,10 @@ subroutine regcoil_write_output
   call cdf_setatt(ncid, vn_Bnormal_total, 'Residual magnetic field normal to the plasma surface, in units of Tesla, ' // &
        'for each value of the regularization parameter lambda considered.')
 
+  call cdf_define(ncid, vn_Bnormal_total_middle, Bnormal_total_middle(:,:), dimname=ntheta_nzeta_plasma_dim)
+  call cdf_setatt(ncid, vn_Bnormal_total_middle, 'Magnetic field normal to the middle surface, in units of Tesla, ' // &
+       'for each value of the regularization parameter lambda considered.')
+  
   call cdf_define(ncid, vn_K2, K2(:,:,1:Nlambda), dimname=ntheta_nzeta_coil_nlambda_dim)
   call cdf_setatt(ncid, vn_K2, 'Squared current density on the coil winding surface, in units of Amperes^2/meter^2, ' // &
        'for each value of the regularization parameter lambda considered.')
@@ -660,6 +665,7 @@ subroutine regcoil_write_output
   call cdf_write(ncid, vn_single_valued_current_potential_thetazeta, single_valued_current_potential_thetazeta(:,:,1:Nlambda))
   call cdf_write(ncid, vn_current_potential, current_potential(:,:,1:Nlambda))
   call cdf_write(ncid, vn_Bnormal_total, Bnormal_total(:,:,1:Nlambda))
+  call cdf_write(ncid, vn_Bnormal_total_middle, Bnormal_total_middle)
   call cdf_write(ncid, vn_K2, K2(:,:,1:Nlambda))
   call cdf_write(ncid, vn_Laplace_Beltrami2, Laplace_Beltrami2(:,:,1:Nlambda))
 

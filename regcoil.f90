@@ -3,7 +3,9 @@
 program regcoil
 
   use regcoil_variables, only: total_time, output_filename, general_option, &
-    sensitivity_option, exit_code, fixed_norm_sensitivity_option
+    sensitivity_option, exit_code, fixed_norm_sensitivity_option, &
+    geometry_option_coil, nescin_filename, R0_coil, a_coil, separation,&
+    geometry_option_middle, nescin_filename_middle, R0_middle, a_middle, separation_middle
   use regcoil_init_plasma_mod
 
   implicit none
@@ -60,6 +62,24 @@ program regcoil
   call system_clock(toc)
   total_time = real(toc-tic)/countrate
 
+  ! call regcoil_write_output()
+
+  print *,"Generating middle surface and computing B.n on it"
+  geometry_option_coil = geometry_option_middle
+  nescin_filename = nescin_filename_middle
+  R0_coil = R0_middle
+  a_coil = a_middle
+  separation = separation_middle
+  
+  call regcoil_init_coil_surface()
+  call regcoil_read_bnorm()
+  call regcoil_build_matrices()
+  ! Do not call prepare, this would deallocate the previous solution, which we want to keep!
+  call regcoil_diagnostics(-1)
+  ! solution = single_valued_current_potential_mn(:, Nlambda) ! pick the ilambda solution we want to project
+  ! Bnormal_total_middle = (reshape(matmul(g,solution),(/ ntheta_plasma, nzeta_plasma /)) / norm_normal_plasma) &
+  !    + Bnormal_from_plasma_current + Bnormal_from_net_coil_currents
+  
   call regcoil_write_output()
  
   print *,"REGCOIL complete. Total time=",total_time,"sec."

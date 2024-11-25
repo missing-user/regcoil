@@ -56,6 +56,7 @@ module regcoil_variables
   real(dp), dimension(:,:), allocatable :: norm_normal_plasma, norm_normal_coil
   real(dp), dimension(:,:), allocatable :: basis_functions
 
+
   real(dp) :: dtheta_plasma, dzeta_plasma, dtheta_coil, dzeta_coil
 
   integer :: mpol_potential=12
@@ -120,6 +121,14 @@ module regcoil_variables
   real(dp) :: target_option_p = 4.0
   real(dp) :: coil_plasma_dist_lse_p = 1.0d4
 
+  ! Middle surface properties
+  integer :: geometry_option_middle = 0 
+  character(len=200) :: nescin_filename_middle ="nescin.mid"
+  real(dp) :: R0_middle = 10.0
+  real(dp) :: a_middle = 0.75
+  real(dp) :: separation_middle=0.1
+  real(dp), dimension(:,:), allocatable :: Bnormal_total_middle
+
   ! Needed for sensitivity calculation
   real(dp), dimension(:), allocatable :: L_p_norm_with_area
   real(dp), dimension(:,:), allocatable :: dRMSKdomega
@@ -150,12 +159,15 @@ module regcoil_variables
        target_option_chi2_K = "chi2_K", &
        target_option_max_Bnormal = "max_Bnormal", &
        target_option_rms_Bnormal = "rms_Bnormal", &
+       target_option_rms_Bnormal_normalized = "rms_Bnormal_normalized", &
        target_option_chi2_B = "chi2_B", &
        target_option_max_K_lse = "max_K_lse", &
        target_option_lp_norm_K = "lp_norm_K"
   character(len=200) :: target_option = target_option_max_K
-
+  real(dp) :: B_normalization = 1.0
+  
   namelist / regcoil_nml / ntheta_plasma, nzeta_plasma, ntheta_coil, nzeta_coil, &
+       geometry_option_middle, nescin_filename_middle, R0_middle, a_middle,separation_middle,  &
        geometry_option_plasma, geometry_option_coil, &
        R0_plasma, R0_coil, a_plasma, a_coil, &
        separation, wout_filename, &

@@ -68,6 +68,11 @@ subroutine regcoil_prepare_solve()
   allocate(Bnormal_total(ntheta_plasma,nzeta_plasma,nlambda), stat=iflag)
   if (iflag .ne. 0) stop 'regcoil_prepare_solve Allocation error 14!'
 
+  if (allocated(Bnormal_total_middle)) deallocate(Bnormal_total_middle)
+  allocate(Bnormal_total_middle(ntheta_plasma,nzeta_plasma), stat=iflag)
+  if (iflag .ne. 0) stop 'regcoil_prepare_solve Allocation error 14!'
+
+
   if (allocated(K2)) deallocate(K2)
   allocate(K2(ntheta_coil,nzeta_coil,nlambda), stat=iflag)
   if (iflag .ne. 0) stop 'regcoil_prepare_solve Allocation error 15!'
