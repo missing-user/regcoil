@@ -8,7 +8,7 @@
 
 LIBSTELL_DIR ?= mini_libstell
 LIBSTELL_FOR_REGCOIL=$(LIBSTELL_DIR)/mini_libstell.a
-#LIBSTELL_FOR_REGCOIL=$(LIBSTELL_DIR)/libstell.a
+LIBSTELL_FOR_REGCOIL=$(LIBSTELL_DIR)/libstell.a
 
 ifdef NERSC_HOST
   HOSTNAME = $(NERSC_HOST)
@@ -118,6 +118,16 @@ else ifeq ($(HOSTNAME),ippports)
   EXTRA_LINK_FLAGS =  -fopenmp -L/usr/local/lib -lnetcdff  -lnetcdf
 
   REGCOIL_COMMAND_TO_SUBMIT_JOB = srun -N 1 -n 1 -c 8 -q debug --mem 8G
+else ifeq ($(HOSTNAME),ubuntu)
+  REGCOIL_HOST=ubuntu
+  FC = mpif90
+  EXTRA_COMPILE_FLAGS = -fopenmp -I/usr/local/include -I/usr/include -ffree-line-length-none -cpp
+  EXTRA_COMPILE_FLAGS = -fopenmp -I/usr/local/include -I/usr/include -ffree-line-length-none -O3 -g
+  EXTRA_LINK_FLAGS =  -fopenmp -L/usr/local/lib -I/usr/lib -lnetcdff  -lnetcdf -lblas -llapack
+  #EXTRA_COMPILE_FLAGS = -fopenmp -I/usr/local/include -ffree-line-length-none -O3 -g -fallow-argument-mismatch
+  #EXTRA_LINK_FLAGS =  -fopenmp -L/usr/local/lib -lnetcdff  -lnetcdf
+
+  REGCOIL_COMMAND_TO_SUBMIT_JOB =
 else
   # This configuration works for the IPP ST cluster. Configure by running `ml intel ompi netcdf mkl`
   REGCOIL_HOST=stcluster
