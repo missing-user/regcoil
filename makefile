@@ -120,6 +120,9 @@ else ifeq ($(HOSTNAME),ippports)
   REGCOIL_COMMAND_TO_SUBMIT_JOB = srun -N 1 -n 1 -c 8 -q debug --mem 8G
 else ifeq ($(HOSTNAME),ubuntu)
   REGCOIL_HOST=ubuntu
+  # If mini_libstell is causing issues, clone STELLOPT, run STELLOPT_PATH=~/STELLOPT MACHINE=ubuntu ./build_all -o release
+  # and finally compile regcoil with LIBSTELL_DIR=~/STELLOPT/LIBSTELL/Release MACHINE=ubuntu make -j12
+
   FC = mpif90
   EXTRA_COMPILE_FLAGS = -fopenmp -I/usr/local/include -I/usr/include -ffree-line-length-none -cpp
   EXTRA_COMPILE_FLAGS = -fopenmp -I/usr/local/include -I/usr/include -ffree-line-length-none -O3 -g
